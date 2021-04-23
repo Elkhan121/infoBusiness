@@ -64,14 +64,15 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "just_test_example_bot";
+        return "centrnit_bot";
     }
 
     @Override
     public String getBotToken() {
-//        return "840528216:AAG0nr1Yi22M8A0u_QR3s6hV7uVvu0_1GkA"; // мой
+//        return "840528216:AAG0nr1Yi22M8A0u_QR3s6hV7uVvu0_1GkA";  // мой
 //        return "1018614657:AAFSXmF1acRFpyo6TkOpnsPdwLkwNc71838";
-        return "1772101252:AAH5UDGTwyNst5wHWbqk2PWYn_dNsUyI97U";
+//        return "1772101252:AAH5UDGTwyNst5wHWbqk2PWYn_dNsUyI97U"; //@testBot
+        return "1636752449:AAFlrD_g_HBe4DIHjehoIA5E13Adj2nf36I";   //@centrnit_bot
     }
 }
 

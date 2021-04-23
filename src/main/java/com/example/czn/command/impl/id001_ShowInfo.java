@@ -85,5 +85,5 @@ public class id001_ShowInfo extends Command {
     private int getPhone() throws TelegramApiException {
         return sendMessageWithKeyboard(getText(Const.SET_MOBILE_PHONE_NUMBER),
                 keyboardService.getKeyboard(keyboardMarkUpRepo.findById(12), LanguageService.getLanguage(chatId)));
-    }   
+    }
 }
