@@ -52,7 +52,6 @@ public class id001_ShowInfo extends Command {
                         deleteMessage(del);
                         sendMessage("Регистрация успешно пройдена!", chatId);
                         sendMessageWithKeyboard("Главное меню: ", 1);
-                        sendMessageWithAddition();
                         return EXIT;
                     } else {
                         wrongData();

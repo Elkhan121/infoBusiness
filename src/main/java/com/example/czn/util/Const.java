@@ -8,8 +8,11 @@ public class Const {
     // -------- KEYBOARD_ID --------------
     public final static int MAIN_MENU_KEYBOARD_ID = 1;
     public final static int EDIT_QUEST_KEYBOARD = 18;
+
     // -------- BUTTON ID ----------------
     public final static int CHANGE_BUTTON_NAME = 19;
+    public final static int QUESTIONNAIRE = 1440;
+    public final static int CERTIFICATE = 1443;
     public final static int CHANGE_BUTTON_TEXT = 20;
     public final static int ADD_NEW_FILE = 21;
     public final static int DELETE_FILE = 22;
@@ -29,7 +32,6 @@ public class Const {
     // ------- SELECT LANGUAGE -----------
     public final static int RU_LANGUAGE = 7;
     public final static int KZ_LANGUAGE = 6;
-    public final static int EN_LANGUAGE = 96;
     // ------------------------------------
     public static final String SPLIT = ";";
     public static final String ID_MARK = "/comId";
@@ -107,4 +109,8 @@ public class Const {
     public static final int WRONG_NUMBER_CHOICE = 87;
     public static final int SURVEY_DELETE_MESSAGE = 94;
     public static final int CHOICE_DELETE_MESSAGE = 95;
+    public static final int TABLE_HEAD_MESSAGE = 1441;
+    public static final int TABLE_CERTIFICATE_MESSAGE = 1442;
+    public static final int MENU_KEYBOARD_ID = 222;
+
 }

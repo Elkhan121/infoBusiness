@@ -58,10 +58,10 @@ public class id021_UserList extends Command {
                         }
                     }else{
                       //      System.out.println(updateMessageText);
-                        sendMessage("Информация о контакте: \n Имя пользователя:  " +
+                        sendMessageWithKeyboard("Информация о контакте: \n Имя пользователя:  " +
                                 userList.get(Integer.parseInt(updateMessageText)).getFullName() +
                                 "\n Username:  " + userList.get(Integer.parseInt(updateMessageText)).getUserName() +
-                                "\n Email: " + userList.get(Integer.parseInt(updateMessageText)).getEmail());
+                                "\n Email: " + userList.get(Integer.parseInt(updateMessageText)).getEmail(),205);
 
                         userChatId = userList.get(Integer.parseInt(updateMessageText)).getChatId();
 

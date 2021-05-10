@@ -1,52 +1,52 @@
 package com.example.czn.command.impl;
 
 import com.example.czn.command.Command;
-import com.example.czn.command.Command;
-import com.example.czn.dao.repositories.AdminRepos;
-import com.example.czn.dao.repositories.UserRepo;
 import com.example.czn.entity.standart.Admin;
 import com.example.czn.entity.standart.User;
+import com.example.czn.util.ButtonsLeaf;
 import com.example.czn.util.Const;
 import com.example.czn.util.DateUtil;
 import com.example.czn.util.type.WaitingType;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.poi.ss.formula.functions.T;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import javax.transaction.Transactional;
+import java.io.BufferedWriter;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class id004_EditAdmin extends Command {
+public class id032_AdminEdit extends Command {
+    List<Admin> admins;
     private int mess;
+    private StringBuilder text;
     private static String delete;
     private static String deleteIcon;
     private static String showIcon;
-    private StringBuilder text;
-    private List<Admin> allAdmins;
 
     @Override
     public boolean execute() throws SQLException, TelegramApiException {
-
-        if (deleteIcon == null) {
-            deleteIcon = getText(Const.ICON_CROSS);
-            showIcon = getText(Const.ICON_LOUPE);
-            delete = getText(Const.DELETE_BUTTON_SLASH);
-        }
-        if (mess != 0) {
-            deleteMessage(mess);
-        }
-        if (hasContact()) {
-            registerNewAdmin();
-            return COMEBACK;
-        }
-        if (updateMessageText.contains(delete)) {
-            if (allAdmins.size() > 1) {
-                int numberAdminList = Integer.parseInt(updateMessageText.replaceAll("[^0-9]", ""));
-                adminRepos.delete(allAdmins.get(numberAdminList));
+            if (deleteIcon == null) {
+                deleteIcon = getText(Const.ICON_CROSS);
+                showIcon = getText(Const.ICON_LOUPE);
+                delete = getText(Const.DELETE_BUTTON_SLASH);
             }
-        }
-        sendEditorAdmin();
-        return COMEBACK;
+            if (mess != 0) {
+                deleteMessage(mess);
+            }
+            if (hasContact()) {
+                registerNewAdmin();
+                return COMEBACK;
+            }
+            if (updateMessageText.contains(delete)) {
+                if (admins.size() > 1) {
+                    int numberAdminList = Integer.parseInt(updateMessageText.replaceAll("[^0-9]", ""));
+                    adminRepos.delete(admins.get(numberAdminList));
+                }
+            }
+            sendEditorAdmin();
+            return COMEBACK;
     }
 
     private boolean registerNewAdmin() throws TelegramApiException, SQLException {
@@ -91,12 +91,12 @@ public class id004_EditAdmin extends Command {
 
     private void getText(boolean withLink) throws SQLException {
         text = new StringBuilder("");
-        allAdmins = adminRepos.findAll();
+        admins = adminRepos.findAll();
         int count = 0;
-        for (Admin admin : allAdmins) {
+        for (Admin admin : admins) {
             try {
                 User user = userRepo.findByChatId(admin.getUserId());
-                if (allAdmins.size() == 1) {
+                if (admins.size() == 1) {
                     if (withLink) {
                         text.append(getLinkForUser(user.getChatId(), user.getUserName())).append(space).append(next);
                     } else {

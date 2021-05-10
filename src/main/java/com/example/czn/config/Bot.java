@@ -35,10 +35,7 @@ public class Bot extends TelegramLongPollingBot {
     //    private ButtonRepository buttonRepository  = TelegramBotRepositoryProvider.getButtonRepository();
     @Override
     public void onUpdateReceived(Update update) {
-        //System.out.println(update);
-        //Long chatId               = UpdateUtil.getChatId(update);
-        //List<Button> buttons = buttonRepository.findAll();
-        //System.out.println(buttons);
+
         Conversation conversation = getConversation(update);
         try {
 
@@ -64,7 +61,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "centrnit_bot";
+        return "MiniSocialNetwork";
     }
 
     @Override
@@ -72,7 +69,8 @@ public class Bot extends TelegramLongPollingBot {
 //        return "840528216:AAG0nr1Yi22M8A0u_QR3s6hV7uVvu0_1GkA";  // мой
 //        return "1018614657:AAFSXmF1acRFpyo6TkOpnsPdwLkwNc71838";
 //        return "1772101252:AAH5UDGTwyNst5wHWbqk2PWYn_dNsUyI97U"; //@testBot
-        return "1636752449:AAFlrD_g_HBe4DIHjehoIA5E13Adj2nf36I";   //@centrnit_bot
+        return "1648884653:AAEFWRv5mocX8ZiXz7t-HAya-WU7KJCBCGE"; //MiniSocialNetwork
+//        return "1636752449:AAF82CRAEPisqFe3FT6MVDSX6e41Cw_ddRA";   //@centrnit_bot
     }
 }
 

@@ -15,7 +15,7 @@ import javax.persistence.Id;
 public class Admin {
     @Id
     @GeneratedValue
-    private int    id;
+    private Long    id;
     private long   userId;
     private String comment;
 

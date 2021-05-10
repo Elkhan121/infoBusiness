@@ -19,13 +19,14 @@ import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.meta.api.methods.send.SendAudio;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Contact;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.SQLException;
 
 
@@ -63,14 +64,17 @@ public abstract class Command {
     protected  UserRepo userRepo = TelegramBorRepositoryProvider.getUserRepo();
     protected  AdminRepos adminRepos = TelegramBorRepositoryProvider.getAdminRepos();
     protected  ButtonRepo buttonRepo = TelegramBorRepositoryProvider.getButtonRepo();
-    protected MessageRepo messageRepo = TelegramBorRepositoryProvider.getMessageRepo();
+    protected  MessageRepo messageRepo = TelegramBorRepositoryProvider.getMessageRepo();
     protected  KeyboardMarkUpRepo keyboardMarkUpRepo = TelegramBorRepositoryProvider.getKeyboardMarkUpRepo();
     protected  SuggestionRepo suggestionRepo = TelegramBorRepositoryProvider.getSuggestionRepo();
     protected  ComplaintRepo complaintRepo = TelegramBorRepositoryProvider.getComplaintRepo();
+    protected  QuestionnaireRepo questionnaireRepo = TelegramBorRepositoryProvider.getQuestionnaireRepo();
     protected  QuestRepo questRepo = TelegramBorRepositoryProvider.getQuestRepo();
     protected  OperatorRepo operatorRepo = TelegramBorRepositoryProvider.getOperatorRepo();
     protected  SurveyRepo surveyRepo = TelegramBorRepositoryProvider.getSurveyRepo();
     protected  ResponsibleRepos responsibleRepos = TelegramBorRepositoryProvider.getResponsibleRepos();
+    protected  ProjectRepo projectRepo = TelegramBorRepositoryProvider.getProjectRepo();
+    protected  CertificateRepo certificateRepo = TelegramBorRepositoryProvider.getCertificateRepo();
 
 
     public abstract boolean execute() throws SQLException, TelegramApiException;
@@ -185,6 +189,19 @@ public abstract class Command {
         return update.hasMessage() && update.getMessage().getContact() != null;
     }
 
+    protected void sendFile(long chatId , String fileName,DefaultAbsSender bot ,String path) throws
+            TelegramApiException {
+
+        java.io.File file = new File(path);
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            bot.execute(new SendDocument().setChatId(chatId).setDocument(fileName, fileInputStream));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     protected void sendMessageWithAddition() throws TelegramApiException {
         deleteMessage(updateMessageId);
         com.example.czn.entity.standart.Message message = messageRepo.findByIdAndLangId(messageId, LanguageService.getLanguage(chatId).getId());
@@ -230,7 +247,11 @@ public abstract class Command {
     }
 
     protected String getLinkForUser(long chatId, String userName) {
-        return String.format("<a href = \"tg://user?id=%s\">%s</a>", String.valueOf(chatId), userName);
+        return String.format("<a href = \"tg://user?id=%s\">%s</a>",(chatId), userName);
+    }
+
+    protected String getLinkForUseer(long chatId, String userName) {
+        return String.format("<a href = \"https://t.me/username?id=%s\">%s</a>",(chatId), userName);
     }
 
     protected int toDeleteMessage(int messageDeleteId) {

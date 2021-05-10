@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class AdminQuest {
+public class   AdminQuest {
     @Id
     @GeneratedValue
     private int id;

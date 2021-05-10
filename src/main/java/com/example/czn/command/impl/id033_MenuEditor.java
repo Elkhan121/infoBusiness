@@ -11,23 +11,27 @@ import com.example.czn.entity.standart.Message;
 import com.example.czn.service.LanguageService;
 import com.example.czn.service.ParserMessageEntity;
 import com.example.czn.util.ButtonUtil;
+import com.example.czn.util.ButtonsLeaf;
 import com.example.czn.util.Const;
 import com.example.czn.util.FileType;
 import com.example.czn.util.type.WaitingType;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessagecontent.InputTextMessageContent;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.security.Key;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.net.HttpHeaders.LINK;
-
 @Component
-public class id005_EditMenu extends Command {
+public class id033_MenuEditor extends Command {
 
     private Language currentLanguage;
     private Button currentButton;
@@ -40,29 +44,20 @@ public class id005_EditMenu extends Command {
     private int buttonLinkId;
     boolean buttonIds = false;
 //    private static MessageRepo messageRepo = TelegramBorRepositoryProvider.getMessageRepo();
-//    private final static String NAME = messageDao.getMessageText(Const.NAME_TEXT_FOR_LINK);
-//    private final static String LINK = messageDao.getMessageText(Const.LINK_TEXT_FOR_EDIT);
     private static String NAME;
-
-    @Autowired
-    private MessageRepo messageRepoq;
-    private ButtonRepo buttonRepo;
 
     @Override
     public boolean execute() throws SQLException, TelegramApiException {
         NAME = String.valueOf(messageRepo.findByIdAndLangId(Const.NAME_TEXT_FOR_LINK, LanguageService.getLanguage(chatId).getId()));
-        if (!isAdmin()) {
-            sendMessage(Const.NO_ACCESS);
-            return EXIT;
-        }
         switch (waitingType) {
             case START:
-                currentLanguage = LanguageService.getLanguage(chatId);
-                sendListMenu();
-                waitingType = WaitingType.CHOOSE_OPTION;
-                return COMEBACK;
-            case CHOOSE_OPTION:
+                    currentLanguage = LanguageService.getLanguage(chatId);
+                    sendListMenu();
+                waitingType = WaitingType.ONE;
+                    return COMEBACK;
+            case ONE:
                 deleteMessage();
+                System.out.println(hasCallbackQuery());
                 if (hasCallbackQuery()) {
                     int buttonId = Integer.parseInt(updateMessageText);
                     long keyboardMarkUpId = messageRepo.findByIdAndLangId(buttonRepo.findByIdAndLangId(buttonId, currentLanguage.getId()).getMessageId(), currentLanguage.getId()).getKeyboardId();
@@ -104,7 +99,7 @@ public class id005_EditMenu extends Command {
                         sendMessage(Const.WRONG_NAME_BUTTON_TEXT);
                         return COMEBACK;
                     }
-                        if (buttonRepo.countButtonByNameAndLangId(buttonName, currentLanguage.getId()) > 0){
+                    if (buttonRepo.countButtonByNameAndLangId(buttonName, currentLanguage.getId()) > 0) {
                         sendMessage(Const.BUTTON_NAME_BUSY);
                         return COMEBACK;
                     }
@@ -163,11 +158,12 @@ public class id005_EditMenu extends Command {
                     return COMEBACK;
                 }
         }
-                return EXIT;
+        return EXIT;
     }
 
     private void sendListMenu() throws TelegramApiException {
-        toDeleteKeyboard(sendMessageWithKeyboard(Const.LIST_EDIT_MENU_MESSAGE,Const.MENU_KEYBOARD_ID));
+      sendMessageWithKeyboard(Const.LIST_EDIT_MENU_MESSAGE,keyboardMarkUpRepo.findById(1));
+       waitingType = WaitingType.ONE;
     }
 
     private void sendEditor() throws TelegramApiException {
@@ -183,21 +179,22 @@ public class id005_EditMenu extends Command {
                         .setChatId(chatId)
                 ).getMessageId();
             }
-             urlList = new StringBuilder();
-              if (keyId != 0 && keyboardMarkUpRepo.countById( message.getKeyboardId().intValue()) > 0)
+            urlList = new StringBuilder();
+
+            if (keyId != 0 && keyboardMarkUpRepo.countById(message.getKeyboardId().intValue()) > 0)
                 urlList.append(getText(Const.BUTTON_LINKS)).append(next);//<b>Ссылки в виде кнопок:</b>
             List<Button> list = (List<Button>) buttonRepo.findById(keyId);
-                for (Button button : list) {
-                    if (button.getUrl() != null) {
-                        urlList.append(linkEdit).append(button.getId()).append(" ").append(button.getName()).append(" - ").append(button.getUrl()).append(next);
-                    }
+            for (Button button : list) {
+                if (button.getUrl() != null) {
+                    urlList.append(linkEdit).append(button.getId()).append(" ").append(button.getName()).append(" - ").append(button.getUrl()).append(next);
                 }
             }
-            desc = String.format(getText(Const.TEXT_MENU_EDIT_BUTTON_LINKS), currentButton.getName(), message.getName(), urlList, currentLanguage.name());
-            if (desc.length() > getMaxSizeMessage()) {            //максимальное сообщение
-                String substring = message.getName().substring(0, desc.length() - getMaxSizeMessage() - 3) + "..."; //добавим многоточие что обрезано
-                desc = String.format(getText(Const.TEXT_MENU_EDIT_BUTTON_LINKS), currentButton.getName(), substring, currentLanguage.name());
-            } else {
+        }
+        desc = String.format(getText(Const.TEXT_MENU_EDIT_BUTTON_LINKS), currentButton.getName(), message.getName(), urlList, currentLanguage.name());
+        if (desc.length() > getMaxSizeMessage()) {            //максимальное сообщение
+            String substring = message.getName().substring(0, desc.length() - getMaxSizeMessage() - 3) + "..."; //добавим многоточие что обрезано
+            desc = String.format(getText(Const.TEXT_MENU_EDIT_BUTTON_LINKS), currentButton.getName(), substring, currentLanguage.name());
+        } else {
             desc = String.format(getText(Const.TEXT_MENU_EDIT_BUTTON_LINKS), currentButton.getName(), getText(Const.DO_NOT_CHANGE_TEXT_THIS_BUTTON), currentLanguage.name());
         }
         textId = sendMessageWithKeyboard(desc, Const.KEYBOARD_EDIT_BUTTON_ID);
@@ -262,8 +259,7 @@ public class id005_EditMenu extends Command {
             }
         } else if (updateMessageText.startsWith(linkEdit)) {
             String buttId = updateMessageText.replace(linkEdit, "");
-            //if (keyboardMarkUpDao.getButtonsString(keyId).contains(buttId)) {
-            if (keyboardMarkUpRepo.findById(keyId).getButton_ids().contains(buttId)){
+            if (keyboardMarkUpRepo.findById(keyId).getButton_ids().contains(buttId)) {
                 sendMessage(Const.SET_CHANGE_LINKS);
                 buttonLinkId = Integer.parseInt(buttId);
                 waitingType = WaitingType.UPDATE_BUTTON_LINK;
@@ -292,7 +288,6 @@ public class id005_EditMenu extends Command {
     }
 
     private void update() {
-        //messageDao.update(message);
         messageRepo.save(message);
         getLogger().info("Update message {} for lang {} - chatId = ", message.getId(), currentLanguage.name(), chatId);
     }
@@ -315,7 +310,6 @@ public class id005_EditMenu extends Command {
     }
 
     private boolean getButtonIds(int keyboardMarkUpId) {
-        //String buttonsString = keyboardMarkUpDao.getButtonsString(keyboardMarkUpId);
         String buttonsString = String.valueOf(keyboardMarkUpRepo.findById(keyboardMarkUpId));
         if (buttonsString == null) return false;
         String rows[] = buttonsString.split(";");
@@ -335,3 +329,4 @@ public class id005_EditMenu extends Command {
         return false;
     }
 }
+

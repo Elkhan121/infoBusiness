@@ -29,8 +29,5 @@ public class id002_SelectionLanguage extends Command {
         if (isButton(Const.KZ_LANGUAGE)) {
             LanguageService.setLanguage(chatId, Language.kz);
         }
-        if (isButton(Const.EN_LANGUAGE)) {
-            LanguageService.setLanguage(chatId, Language.en);
-        }
     }
 }

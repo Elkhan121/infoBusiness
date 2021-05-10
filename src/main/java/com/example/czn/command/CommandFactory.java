@@ -67,6 +67,19 @@ public class CommandFactory {
         addCommand(id019_QuestionList.class);
         addCommand(id020_Profile.class);
         addCommand(id021_UserList.class);
+
+        // new Commands
+
+        addCommand(id029_EditorMenu.class);
+        addCommand(id030_Admin.class);
+        addCommand(id031_AdminInfo.class);
+        addCommand(id032_AdminEdit.class);
+        addCommand(id033_MenuEditor.class);
+        addCommand(id034_CourseEdit.class);
+        addCommand(id035_Mailing.class);
+        addCommand(id036_ProjectEditor.class);
+        addCommand(id037_questionnaire.class);
+        addCommand(id038_Certificate_req.class);
         printListCommand();
     }
 
