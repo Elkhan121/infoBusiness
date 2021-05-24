@@ -70,7 +70,7 @@ public class Conversation {
                 return;
             }
             boolean commandFinished = command.get().execute();
-            if (commandFinished) {
+                if (commandFinished) {
                 clear();
             }
         }

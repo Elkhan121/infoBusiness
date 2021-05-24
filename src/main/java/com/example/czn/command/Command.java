@@ -2,6 +2,9 @@ package com.example.czn.command;
 
 
 import com.example.czn.dao.repositories.*;
+import com.example.czn.entity.standart.Button;
+import com.example.czn.entity.standart.ButtonFile;
+import com.example.czn.entity.standart.Language;
 import com.example.czn.service.KeyboardService;
 import com.example.czn.service.LanguageService;
 import com.example.czn.util.BotUtil;
@@ -58,23 +61,31 @@ public abstract class Command {
     protected final static boolean EXIT = true;
     protected final static boolean COMEBACK = false;
     protected Message updateMessage;
+    protected SendDocument sendDocument;
+    protected Language currentLanguage;
+    protected ButtonFile buttonFile;
 
     private KeyboardService keyboardService = new KeyboardService();
 
-    protected  UserRepo userRepo = TelegramBorRepositoryProvider.getUserRepo();
-    protected  AdminRepos adminRepos = TelegramBorRepositoryProvider.getAdminRepos();
-    protected  ButtonRepo buttonRepo = TelegramBorRepositoryProvider.getButtonRepo();
-    protected  MessageRepo messageRepo = TelegramBorRepositoryProvider.getMessageRepo();
-    protected  KeyboardMarkUpRepo keyboardMarkUpRepo = TelegramBorRepositoryProvider.getKeyboardMarkUpRepo();
-    protected  SuggestionRepo suggestionRepo = TelegramBorRepositoryProvider.getSuggestionRepo();
-    protected  ComplaintRepo complaintRepo = TelegramBorRepositoryProvider.getComplaintRepo();
-    protected  QuestionnaireRepo questionnaireRepo = TelegramBorRepositoryProvider.getQuestionnaireRepo();
-    protected  QuestRepo questRepo = TelegramBorRepositoryProvider.getQuestRepo();
-    protected  OperatorRepo operatorRepo = TelegramBorRepositoryProvider.getOperatorRepo();
-    protected  SurveyRepo surveyRepo = TelegramBorRepositoryProvider.getSurveyRepo();
-    protected  ResponsibleRepos responsibleRepos = TelegramBorRepositoryProvider.getResponsibleRepos();
-    protected  ProjectRepo projectRepo = TelegramBorRepositoryProvider.getProjectRepo();
-    protected  CertificateRepo certificateRepo = TelegramBorRepositoryProvider.getCertificateRepo();
+    protected ContestRepo contestRepo = TelegramBorRepositoryProvider.getContestRepo();
+    protected TrainingAndSeminarRepo trainingAndSeminarRepo = TelegramBorRepositoryProvider.getTrainingAndSeminarRepo();
+    protected FileRepo fileRepo = TelegramBorRepositoryProvider.getFileRepo();
+    protected UserRepo userRepo = TelegramBorRepositoryProvider.getUserRepo();
+    protected AdminRepos adminRepos = TelegramBorRepositoryProvider.getAdminRepos();
+    protected ButtonRepo buttonRepo = TelegramBorRepositoryProvider.getButtonRepo();
+    protected MessageRepo messageRepo = TelegramBorRepositoryProvider.getMessageRepo();
+    protected KeyboardMarkUpRepo keyboardMarkUpRepo = TelegramBorRepositoryProvider.getKeyboardMarkUpRepo();
+    protected SuggestionRepo suggestionRepo = TelegramBorRepositoryProvider.getSuggestionRepo();
+    protected ComplaintRepo complaintRepo = TelegramBorRepositoryProvider.getComplaintRepo();
+    protected QuestionnaireRepo questionnaireRepo = TelegramBorRepositoryProvider.getQuestionnaireRepo();
+    protected QuestRepo questRepo = TelegramBorRepositoryProvider.getQuestRepo();
+    protected OperatorRepo operatorRepo = TelegramBorRepositoryProvider.getOperatorRepo();
+    protected SurveyRepo surveyRepo = TelegramBorRepositoryProvider.getSurveyRepo();
+    protected ResponsibleRepos responsibleRepos = TelegramBorRepositoryProvider.getResponsibleRepos();
+    protected ProjectRepo projectRepo = TelegramBorRepositoryProvider.getProjectRepo();
+    protected CertificateRepo certificateRepo = TelegramBorRepositoryProvider.getCertificateRepo();
+    private com.example.czn.entity.standart.Message currentMessage;
+    private Button currentButton;
 
 
     public abstract boolean execute() throws SQLException, TelegramApiException;
@@ -128,9 +139,9 @@ public abstract class Command {
         int lang = LanguageService.getLanguage(chatId).getId();
         com.example.czn.entity.standart.Message mes;
         try {
-        mes = messageRepo.findByIdAndLangId(messageIdFromBD, lang);
-        return mes.getName();
-        }catch (Exception e){
+            mes = messageRepo.findByIdAndLangId(messageIdFromBD, lang);
+            return mes.getName();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return messageRepo.findByIdAndLangId(messageIdFromBD, LanguageService.getLanguage(chatId).getId()).getName();
@@ -181,6 +192,10 @@ public abstract class Command {
         return false;
     }
 
+    protected void correctIndex(int indexToMake) {
+        if (indexToMake == 0) indexToMake++;
+    }
+
     protected Logger getLogger() {
         return LoggerFactory.getLogger(this.getClass());
     }
@@ -189,7 +204,7 @@ public abstract class Command {
         return update.hasMessage() && update.getMessage().getContact() != null;
     }
 
-    protected void sendFile(long chatId , String fileName,DefaultAbsSender bot ,String path) throws
+    protected void sendFile(long chatId, String fileName, DefaultAbsSender bot, String path) throws
             TelegramApiException {
 
         java.io.File file = new File(path);
@@ -207,13 +222,13 @@ public abstract class Command {
         com.example.czn.entity.standart.Message message = messageRepo.findByIdAndLangId(messageId, LanguageService.getLanguage(chatId).getId());
 
         sendMessage(messageId, chatId, null, message.getPhoto());
-        if (message.getKeyboardId() > 0 && message.getKeyboardId() != null){
-            sendMessageWithKeyboard(getText((int)messageId),
+        if (message.getKeyboardId() > 0 && message.getKeyboardId() != null) {
+            sendMessageWithKeyboard(getText((int) messageId),
                     keyboardService.getKeyboard(
-                            keyboardMarkUpRepo.findById((long)message.getKeyboardId())
-                    ,LanguageService.getLanguage(chatId)),
+                            keyboardMarkUpRepo.findById((long) message.getKeyboardId())
+                            , LanguageService.getLanguage(chatId)),
                     chatId
-                    );
+            );
         }
         if (message.getFile() != null) {
             try {
@@ -242,16 +257,16 @@ public abstract class Command {
 //        return adminDao.isAdmin(chatId);
     }
 
-    protected boolean isOperator(){
+    protected boolean isOperator() {
         return operatorRepo.countByUserId(chatId) > 0;
     }
 
     protected String getLinkForUser(long chatId, String userName) {
-        return String.format("<a href = \"tg://user?id=%s\">%s</a>",(chatId), userName);
+        return String.format("<a href = \"tg://user?id=%s\">%s</a>", (chatId), userName);
     }
 
     protected String getLinkForUseer(long chatId, String userName) {
-        return String.format("<a href = \"https://t.me/username?id=%s\">%s</a>",(chatId), userName);
+        return String.format("<a href = \"https://t.me/username?id=%s\">%s</a>", (chatId), userName);
     }
 
     protected int toDeleteMessage(int messageDeleteId) {
@@ -268,7 +283,7 @@ public abstract class Command {
         return sendMessageWithKeyboard(getText(messageId), keyboard);
     }
 
-    protected int sendMessageWithKeyboard(int messageId, long keyboardId) throws TelegramApiException{
+    protected int sendMessageWithKeyboard(int messageId, long keyboardId) throws TelegramApiException {
         return sendMessageWithKeyboard(getText(messageId), keyboardService.getKeyboard(keyboardMarkUpRepo.findById(keyboardId), chatId));
     }
 
@@ -284,6 +299,91 @@ public abstract class Command {
     protected int sendMessageWithKeyboard(String text, ReplyKeyboard keyboard, long chatId) throws TelegramApiException {
         return botUtils.sendMessageWithKeyboard(text, keyboard, chatId);
     }
+
+
+    // menuEditorCommands
+
+    protected void sendListMenu(int messageIdFromDB, long keyboardId, Language language) throws TelegramApiException {
+        keyboardService = new KeyboardService();
+        sendMessageWithKeyboard(getText(messageIdFromDB), keyboardService.selectForEdition(keyboardId, language));
+    }
+
+    protected void getButtonInfo() throws TelegramApiException {
+        currentLanguage = LanguageService.getLanguage(chatId);
+        currentButton = buttonRepo.findById(Integer.parseInt(updateMessageText));
+        try {
+            currentMessage = messageRepo.findByIdAndLangId(currentButton.getMessageId(), currentButton.getLangId());
+        } catch (Exception e) {
+            noMessage(1456);
+        }
+        sendMessageWithKeyboard(String.format(getText(1444)
+                , currentButton.getName()
+                , currentMessage.getName()
+                , currentLanguage.name())
+                , 211);
+        sendFile();
+        waitingType = WaitingType.TWO;
+    }
+
+    protected void noMessage(int messageIdFromDB) {
+        if (currentMessage == null) {
+            currentMessage = messageRepo.findByIdAndLangId(messageIdFromDB, currentButton.getLangId());
+        }
+    }
+
+    protected void updateButtonText(String messageText,long messageId, int langId) throws TelegramApiException {
+        try {
+            noMessage(1456);
+            currentMessage.setName(messageText);
+            messageRepo.update(messageText, messageId, langId);
+            sendMessageWithKeyboard(getText(1450), 211);
+        } catch (Exception e) {
+            currentMessage.setName(messageText);
+            messageRepo.update(messageText, messageId, langId);
+            sendMessageWithKeyboard(getText(1450), 211);
+        }
+    }
+
+    protected void updateButtonName(String name, int id, int langId) throws TelegramApiException {
+        currentButton.setName(name);
+        buttonRepo.update(name, id, langId);
+        sendMessageWithKeyboard(getText(1449), 211);
+    }
+
+    protected void deleteButtonFile(long buttonId) throws TelegramApiException {
+        if (isButton(221)) {
+            waitingType = WaitingType.START;
+        } else if (isButton(223)) {
+            fileRepo.delete((int) buttonId);
+            sendMessageWithKeyboard(getText(1452),211);
+            waitingType = WaitingType.TWO;
+        }
+    }
+
+    protected void addButtonFile(int buttonId, String fileHash) throws TelegramApiException {
+        sendMessage(getText(1453));
+        ButtonFile file = new ButtonFile();
+        file.setButtonId(buttonId);
+        file.setFile(fileHash);
+        fileRepo.save(file);
+
+        sendMessageWithKeyboard(getText(1454), 211);
+    }
+
+    protected void sendFile() throws TelegramApiException {
+        sendDocument = new SendDocument();
+        buttonFile = fileRepo.findByButtonId(currentButton.getId());
+        try {
+            sendDocument.setChatId(chatId).setDocument(buttonFile.getFile());
+            sendMessage(getText(1455));
+            bot.execute(sendDocument);
+        } catch (NullPointerException e) {
+            sendMessage(getText(1457));
+        }
+    }
+
+
+    //\\_______--------_______//\\
 
     protected boolean hasCallbackQuery() {
         return update.hasCallbackQuery();
@@ -305,5 +405,8 @@ public abstract class Command {
         return update.hasMessage() && update.getMessage().getVideo() != null;
     }
 
-    protected boolean hasMessageText() { return  update.hasMessage() && update.getMessage().hasText(); }
+    protected boolean hasMessageText() {
+        return update.hasMessage() && update.getMessage().hasText();
+    }
+
 }

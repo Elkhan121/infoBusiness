@@ -161,7 +161,7 @@ public class SuggestionReportService {
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
 
-        style.setFillBackgroundColor(new HSSFColor.BLUE().getIndex());
+        style.setFillBackgroundColor(new HSSFColor().getIndex());
         style.setBorderTop(thin);
         style.setBorderBottom(thin);
         style.setBorderRight(thin);

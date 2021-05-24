@@ -18,6 +18,14 @@ public class TelegramBorRepositoryProvider {
 
     @Getter
     @Setter
+    private static TrainingAndSeminarRepo trainingAndSeminarRepo;
+
+    @Getter
+    @Setter
+    private static ContestRepo contestRepo;
+
+    @Getter
+    @Setter
     private static QuestionnaireRepo questionnaireRepo;
 
     @Getter
@@ -78,6 +86,10 @@ public class TelegramBorRepositoryProvider {
 
     @Getter
     @Setter
+    private static FileRepo fileRepo;
+
+    @Getter
+    @Setter
     private static ProjectRepo projectRepo;
 
 
@@ -97,11 +109,17 @@ public class TelegramBorRepositoryProvider {
                                          QuestionnaireRepo questionnaireRepo,
                                          AdminQuestionRepo adminQuestionRepo,
                                          AdminRepos adminRepos,
+                                         ContestRepo contestRepo,
                                          ComplaintRepo complaintRepo,
                                          KeyboardMarkUpRepo keyboardMarkUpRepo,
+                                         FileRepo fileRepo,
+                                         TrainingAndSeminarRepo trainingAndSeminarRepo,
                                          LanguageUserRepo languageUserRepo){
         setUserRepo(userRepo);
         setProjectRepo(projectRepo);
+        setTrainingAndSeminarRepo(trainingAndSeminarRepo);
+        setFileRepo(fileRepo);
+        setContestRepo(contestRepo);
         setCertificateRepo(certificateRepo);
         setQuestionnaireRepo(questionnaireRepo);
         setSurveyRepo(surveyRepo);

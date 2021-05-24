@@ -138,7 +138,7 @@ public class ReportService {
         style.setAlignment(HorizontalAlignment.CENTER);
         style.setVerticalAlignment(VerticalAlignment.CENTER);
 
-        style.setFillForegroundColor(new HSSFColor.BLUE().getIndex());
+        style.setFillForegroundColor(new HSSFColor().getIndex());
         style.setBorderTop(thin);
         style.setBorderBottom(thin);
         style.setBorderRight(thin);

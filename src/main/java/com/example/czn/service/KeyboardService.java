@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -191,6 +192,14 @@ public class KeyboardService {
         }
     }
 
+    public ReplyKeyboard selectForEdition(long keyboardMarkUpId, Language language) {
+        if (keyboardMarkUpId < 0) {
+            return new ReplyKeyboardRemove();
+        }
+        if (keyboardMarkUpId == 0) return null;
+        return getKeyboardForEdition(keyboardMarkUpRepo.findById(keyboardMarkUpId), language);
+    }
+
 //    ReplyKeyboard getReplyKeyboard(String[] rows) {
 //        ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
 //        replyKeyboardMarkup.setResizeKeyboard(true);
@@ -216,4 +225,5 @@ public class KeyboardService {
 //        replyKeyboardMarkup.setOneTimeKeyboard(isRequestContact);
 //        return replyKeyboardMarkup;
 //    }
+
 }

@@ -15,8 +15,7 @@ import javax.persistence.Id;
 
 public enum Language {
     ru(1),
-    kz(2),
-    en(3);
+    kz(2);
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,6 +25,6 @@ public enum Language {
         for (Language language : values()) {
             if (language.id == (id)) return language;
         }
-        return kz;
+        return ru;
     }
 }

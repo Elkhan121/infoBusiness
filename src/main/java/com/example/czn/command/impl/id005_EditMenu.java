@@ -17,6 +17,7 @@ import com.example.czn.util.type.WaitingType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessagecontent.InputTextMessageContent;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboard;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -43,10 +44,6 @@ public class id005_EditMenu extends Command {
 //    private final static String NAME = messageDao.getMessageText(Const.NAME_TEXT_FOR_LINK);
 //    private final static String LINK = messageDao.getMessageText(Const.LINK_TEXT_FOR_EDIT);
     private static String NAME;
-
-    @Autowired
-    private MessageRepo messageRepoq;
-    private ButtonRepo buttonRepo;
 
     @Override
     public boolean execute() throws SQLException, TelegramApiException {

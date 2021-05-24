@@ -74,12 +74,20 @@ public class CommandFactory {
         addCommand(id030_Admin.class);
         addCommand(id031_AdminInfo.class);
         addCommand(id032_AdminEdit.class);
-        addCommand(id033_MenuEditor.class);
+        addCommand(Id033_ButtonNameEditor.class);
         addCommand(id034_CourseEdit.class);
         addCommand(id035_Mailing.class);
-        addCommand(id036_ProjectEditor.class);
+        addCommand(id036_TrainingAndSeminarEditor.class);
         addCommand(id037_questionnaire.class);
         addCommand(id038_Certificate_req.class);
+        addCommand(id039_ButtonTextEditor.class);
+        addCommand(id040_ButtonEdit.class);
+        addCommand(id041_ButtonNameEditor.class);
+        addCommand(id042_AddingCourseSeminar.class);
+        addCommand(id043_ProjectEditMenu.class);
+        addCommand(id044_ContestEdit.class);
+        addCommand(id045_RefactorProjectName.class);
+        addCommand(id046_RefactorProjectDescription.class);
         printListCommand();
     }
 

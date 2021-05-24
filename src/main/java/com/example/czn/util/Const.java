@@ -111,6 +111,8 @@ public class Const {
     public static final int CHOICE_DELETE_MESSAGE = 95;
     public static final int TABLE_HEAD_MESSAGE = 1441;
     public static final int TABLE_CERTIFICATE_MESSAGE = 1442;
-    public static final int MENU_KEYBOARD_ID = 222;
+    public static final int MENU_KEYBOARD_ID = 210;
+    public static final int MENU_BUTTONS_START_ID = 97;
+    public static final int MENU_BUTTONS_STOP_ID = 100;
 
 }

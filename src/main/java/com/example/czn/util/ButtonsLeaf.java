@@ -13,6 +13,7 @@ import java.util.List;
 public class ButtonsLeaf {
 
     protected List<String> allNamesButtonList;
+    protected List<String> ids;
     protected int countButtons = 5;
     protected int indexCurrentButton;
     protected int page = 1;
@@ -30,6 +31,12 @@ public class ButtonsLeaf {
     public ButtonsLeaf(List<String> allNamesButtonList, int countButtons) {
         this.allNamesButtonList = allNamesButtonList;
         this.countButtons = countButtons;
+    }
+
+    public ButtonsLeaf(List<String> allNamesButtonList,List<String> ids, int countButtons){
+        this.countButtons = countButtons;
+        this.allNamesButtonList = allNamesButtonList;
+        this.ids = ids;
     }
 
     public ButtonsLeaf(List<String> allNamesButtonList, int countButtons, String left, String right) {
@@ -69,6 +76,27 @@ public class ButtonsLeaf {
         for (int i = 0; i < countButtons; i++) {
             currentButtonNames.add(allNamesButtonList.get(indexCurrentButton));
             callbackDataButtons.add(String.valueOf(indexCurrentButton));
+            indexCurrentButton++;
+        }
+        if (typeKeyboard == TypeKeyboard.REPLY) {
+            if (countButtons >= allNamesButtonList.size()) {
+                return getReplyKeyboard(currentButtonNames);
+            }
+            return addButtonLeaf(getReplyKeyboard(currentButtonNames));
+        }
+        if (countButtons >= allNamesButtonList.size()) {
+            return getInlineKeyboard(currentButtonNames, callbackDataButtons);
+        }
+        return addButtonLeaf(getInlineKeyboard(currentButtonNames, callbackDataButtons));
+    }
+
+    public ReplyKeyboard getListButton2() {
+        indexCurrentButton = (page - 1) * countButtons;
+        List<String> currentButtonNames = new ArrayList<>();
+        List<String> callbackDataButtons = new ArrayList<>();
+        for (int i = 0; i < countButtons; i++) {
+            currentButtonNames.add(allNamesButtonList.get(indexCurrentButton));
+            callbackDataButtons.add(ids.get(indexCurrentButton));
             indexCurrentButton++;
         }
         if (typeKeyboard == TypeKeyboard.REPLY) {
